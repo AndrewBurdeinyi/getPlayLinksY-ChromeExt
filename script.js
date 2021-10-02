@@ -16,7 +16,27 @@ class Parser {
     }
   }
 
-  getPlaylistVideo() {}
+  getPlaylistVideo() {
+    let playlist = document.getElementById('playlist'),
+        playlistItems = playlist.querySelectorAll('ytd-playlist-panel-video-renderer#playlist-items'),
+        items = [];
+
+    playlistItems.forEach(el=>{
+      let name = el.querySelector('#video-title').getAttribute('title'),
+          href = el.querySelector('#thumbnail').getAttribute('href'),
+          id = href.split('?v=')[1].split('&list')[0];
+
+      items.push({
+        'name': name,
+        'id': id,
+      });
+    });
+
+    return {
+      'sectionName': 'Playlist:',
+      'items': items,
+    }
+  }
 }
 
 class Popup {
@@ -58,22 +78,20 @@ class Popup {
       popupBody.append(title);
       popupBody.append(items);
     }
-
-    this.status = true;
   }
 
   visibility() {
     let popupBody = document.querySelector('.get-play__popup');
-    if(!this.status) {
-      popupBody.style.visibility = 'visible';
-      popupBody.style.opacity = 1;
-      this.status = true;
-    } else {
+    if(this.status) {
       popupBody.style.opacity = 0;
       setTimeout(()=>{
         popupBody.style.visibility = 'hidden';
         this.status = false;
       }, 500);
+    } else {
+      popupBody.style.visibility = 'visible';
+      popupBody.style.opacity = 1;
+      this.status = true;
     }
 
   }
@@ -85,7 +103,7 @@ class Popup {
 function getStartBlock() {
   let start = document.getElementById('start');
   if(!start) {
-    window.setTimeout(getStartBlock, 1000);
+    window.setTimeout(getStartBlock, 5000);
     return;
   }
   return start;
@@ -108,13 +126,13 @@ window.addEventListener('load', () => {
   let start = getStartBlock(),
       genButt = createPopupButton(start),
       pars = new Parser,
-      popup = new Popup([pars.getNowPlayingVideo()]);
+      popup = new Popup([pars.getNowPlayingVideo(), pars.getPlaylistVideo()]);
 
   popup.init();
 
 
   genButt.addEventListener('click', ()=>{
-    console.clear();
+    // console.clear();
     let activeClass = 'get-play__button--active';
 
     if(genButt.classList.contains(activeClass)) {
@@ -122,6 +140,7 @@ window.addEventListener('load', () => {
     } else {
       genButt.classList.add(activeClass);
     }
+
     popup.visibility();
 
   });
