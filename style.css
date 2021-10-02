@@ -1,31 +1,102 @@
-.get-play-popup__container {
+/* MENU BUTTON */
+
+.get-play__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 3px solid crimson;
+  position: relative;
+  z-index: 9999;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: transform;
+  transition-duration: .3s;
+}
+.get-play__button:before {
+  content: "on";
+  font-size: 14px;
+  color: crimson;
+}
+.get-play__button:after {
+  content: "off";
+  font-size: 14px;
+  color: crimson;
+  display: none;
+}
+
+.get-play__button--active {
+  transform: rotate(135deg);
+}
+.get-play__button--active:before {
+  display: none;
+}
+.get-play__button--active:after {
+  display: block;
+  transform: rotate(-135deg);
+}
+
+
+
+/* POPUP */
+
+.get-play__popup {
   position: fixed;
   z-index: 9999;
   top: 55px;
   left: 20px;
-}
-.get-play-popup {
   width: 550px;
-  height: 400px;
+  min-height: 400px;
   background: rgba(0, 0, 0, .4);
   backdrop-filter: blur(5px);
   overflow: hidden;
+  padding: 25px 50px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity;
+  transition-duration: .5s;
+  visibility: hidden;
 }
-.get-play-popup__button {
+
+.get-play__popup-row {
+  margin: 15px auto;
+  font-size: 13px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: #666;
-  width: 100px;
-  height: 25px;
-  margin: 50px auto;
-  cursor: pointer;
+  flex-direction: column;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, .6);
 }
-.get-play-popup__result {
+
+.popup-row__links {
+  margin-top: 5px;
+  display: flex;
+  overflow: hidden;
+  height: 0;
+  transition: height;
+  transition-duration: .5s;
+}
+.popup-row__links--active {
+  height: 100px;
+}
+
+.popup-row__link {
+  position: relative;
+  color: green;
+  display: flex;
+}
+.popup-row__name {
+  cursor: pointer;
   display: block;
-  resize: none;
-  width: 80%;
-  margin: 0 auto;
-  min-height: 200px;
+  color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 440px;
+  text-decoration: none;
+}
+.get-play__popup-title {
+  font-size: 20px;
+  text-transform: uppercase;
+  color: white;
 }
