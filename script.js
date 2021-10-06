@@ -1,8 +1,7 @@
 // CLASSES
 
 class Popup {
-  constructor(elements) {
-    this.elements = elements;
+  constructor() {
     this.status = false;
   }
 
@@ -12,6 +11,33 @@ class Popup {
     popupBody.classList.add('get-play__popup');
     document.body.prepend(popupBody);
 
+    this.body = popupBody;
+  }
+
+  visibility() {
+    let popupBody = document.querySelector('.get-play__popup');
+    if(this.status) {
+      popupBody.style.opacity = 0;
+      setTimeout(()=>{
+        popupBody.style.visibility = 'hidden';
+        this.status = false;
+      }, 500);
+    } else {
+      popupBody.style.visibility = 'visible';
+      popupBody.style.opacity = 1;
+      this.status = true;
+    }
+
+  }
+
+}
+
+class Items {
+  constructor(parsResult, popup) {
+    this.elements = parsResult;
+    this.popup = popup;
+  }
+  create() {
     for(let key in this.elements) {
       let part = this.elements[key],
           title = document.createElement('h2'),
@@ -35,32 +61,21 @@ class Popup {
         items.append(elementContainer);
       }
 
-      popupBody.append(title);
-      popupBody.append(items);
+      // console.log(this.popup);
+      this.popup.append(title);
+      this.popup.append(items);
     }
-
   }
 
-  visibility() {
-    let popupBody = document.querySelector('.get-play__popup');
-    if(this.status) {
-      popupBody.style.opacity = 0;
-      setTimeout(()=>{
-        popupBody.style.visibility = 'hidden';
-        this.status = false;
-      }, 500);
-    } else {
-      popupBody.style.visibility = 'visible';
-      popupBody.style.opacity = 1;
-      this.status = true;
-    }
-
-  }
-
-  createIframe(item) {
+  addIframe(item) {
     let container = item.querySelector('.popup-row__links'),
         videoID = container.getAttribute('data-video-id'),
         iframe = document.createElement('iframe');
+
+    console.log('start creation iframe');
+    iframe.addEventListener('load', ()=>{
+      console.log('iframe load');
+    });
 
     iframe.setAttribute('src', `https://www.yt-download.org/api/widget/mp3/${videoID}`);
     iframe.setAttribute('width', '100%');
@@ -72,7 +87,6 @@ class Popup {
     container.append(iframe);
 
   }
-
 }
 
 class Parser {
@@ -141,11 +155,17 @@ function createPopupButton() {
 
 window.addEventListener('load', () => {
 
+  console.log(location.href);
+
   let genButt = createPopupButton(),
       pars = new Parser,
-      popup = new Popup([pars.getNowPlayingVideo(), pars.getPlaylistVideo()]);
+      popup = new Popup();
 
   popup.init();
+
+  let items = new Items([pars.getNowPlayingVideo(), pars.getPlaylistVideo()], popup.body);
+
+  items.create();
 
 
   genButt.addEventListener('click', ()=>{
@@ -163,12 +183,12 @@ window.addEventListener('load', () => {
 
   document.addEventListener('click', (e)=>{
     if(e.target.closest('.popup-row__name')) {
-      let item = e.target.closest('.get-play__popup-row'),
+      let element = e.target.closest('.get-play__popup-row'),
           activeClass = 'popup-row__links--active',
-          linksBlock = item.querySelector('.popup-row__links');
+          linksBlock = element.querySelector('.popup-row__links');
 
       if(!linksBlock.querySelector('iframe')) {
-        popup.createIframe(item);
+        items.addIframe(element);
       }
 
       if(linksBlock.classList.contains(activeClass)) {
@@ -178,6 +198,19 @@ window.addEventListener('load', () => {
       }
 
     }
+  });
+
+  let h1 = document.querySelector('h1.title');
+  const observer = new MutationObserver(mutations => {
+
+    console.log(h1);
+
+  });
+
+  observer.observe(h1, {
+    childList: true,
+    subtree: true,
+    characterDataOldValue: false
   });
 
 });
