@@ -51,8 +51,9 @@ class Items {
             element = `
             <div class="popup-row__name">${item.name}</div>
             <div class="popup-row__links" data-video-id="${item.id}">
-              <div class="preloader"><div>Loading...</div></div>
+              <div class="popup-row__iframe-preloader"><div>Loading...</div></div>
             </div>
+            <div class="popup-row__iframe-status"></div>
         `,
             elementContainer = document.createElement('div');
 
@@ -61,20 +62,39 @@ class Items {
         items.append(elementContainer);
       }
 
-      // console.log(this.popup);
+      items.setAttribute('id', part.id);
       this.popup.append(title);
       this.popup.append(items);
     }
   }
 
+  updateNowPlaying(parsObj) {
+    let nowBlock = this.popup.querySelector('#nowPlaying'),
+        name = nowBlock.querySelector('.popup-row__name'),
+        iframe = nowBlock.querySelector('iframe'),
+        link = nowBlock.querySelector('.popup-row__links'),
+        preloader = nowBlock.querySelector('.popup-row__iframe-preloader'),
+        status = nowBlock.querySelector('.popup-row__iframe-status');
+
+    iframe.remove();
+    preloader.removeAttribute('style');
+    status.removeAttribute('style');
+    name.innerHTML = parsObj.items[0].name;
+    link.classList.remove('popup-row__links--active');
+    link.setAttribute('data-video-id', parsObj.items[0].id);
+  }
+
   addIframe(item) {
     let container = item.querySelector('.popup-row__links'),
         videoID = container.getAttribute('data-video-id'),
+        status = item.querySelector('.popup-row__iframe-status'),
+        preloader = item.querySelector('.popup-row__iframe-preloader'),
         iframe = document.createElement('iframe');
 
-    console.log('start creation iframe');
+    status.setAttribute('style', 'background:yellow;');
     iframe.addEventListener('load', ()=>{
-      console.log('iframe load');
+      preloader.setAttribute('style', 'display:none;');
+      status.setAttribute('style', 'background:green;');
     });
 
     iframe.setAttribute('src', `https://www.yt-download.org/api/widget/mp3/${videoID}`);
@@ -92,11 +112,12 @@ class Items {
 class Parser {
 
   getNowPlayingVideo() {
-    let name = document.querySelector('h1.title').textContent,
+    let name = document.querySelector('#info h1.title').textContent,
         id = document.querySelector('ytd-watch-flexy[video-id]').getAttribute('video-id');
 
     return {
       'sectionName': 'Now Playing:',
+      'id': 'nowPlaying',
       'items': [
         {
           'name': name,
@@ -124,6 +145,7 @@ class Parser {
 
     return {
       'sectionName': 'Playlist:',
+      'id': 'playlist',
       'items': items,
     }
   }
@@ -155,7 +177,12 @@ function createPopupButton() {
 
 window.addEventListener('load', () => {
 
-  console.log(location.href);
+  let url = location.href,
+      arrUrl = url.split('/');
+
+  if(arrUrl.indexOf('www.youtube.com') < 0) {
+    return;
+  }
 
   let genButt = createPopupButton(),
       pars = new Parser,
@@ -163,7 +190,7 @@ window.addEventListener('load', () => {
 
   popup.init();
 
-  let items = new Items([pars.getNowPlayingVideo(), pars.getPlaylistVideo()], popup.body);
+  let items = new Items([pars.getNowPlayingVideo()], popup.body);
 
   items.create();
 
@@ -200,11 +227,9 @@ window.addEventListener('load', () => {
     }
   });
 
-  let h1 = document.querySelector('h1.title');
+  let h1 = document.querySelector('#info h1.title');
   const observer = new MutationObserver(mutations => {
-
-    console.log(h1);
-
+    items.updateNowPlaying(pars.getNowPlayingVideo())
   });
 
   observer.observe(h1, {

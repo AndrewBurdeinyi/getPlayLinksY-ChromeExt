@@ -63,9 +63,20 @@
   margin: 15px auto;
   font-size: 13px;
   display: flex;
+  position: relative;
   flex-direction: column;
   padding-bottom: 5px;
   border-bottom: 1px solid rgba(255, 255, 255, .6);
+}
+
+.popup-row__iframe-status {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: red;
+  top: 4px;
+  right: 5px;
+  border-radius: 50%;
 }
 
 .popup-row__links {
@@ -102,7 +113,7 @@
   text-transform: uppercase;
   color: white;
 }
-.preloader {
+.popup-row__iframe-preloader {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,13 +126,13 @@
   justify-content: center;
   align-items: center;
   color: black;
-  z-index: 1;
+  z-index: 2;
 }
 .popup-row__links iframe {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 1;
 }
 
 /* IFRAME */
