@@ -1,0 +1,30 @@
+{
+  "name": "getplaylinksy",
+  "version": "0.0.1",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndrewBurdeinyi/getPlayLinksY-ChromeExt.git"
+  },
+  "author": "Andrew Burdeinyi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndrewBurdeinyi/getPlayLinksY-ChromeExt/issues"
+  },
+  "homepage": "https://github.com/AndrewBurdeinyi/getPlayLinksY-ChromeExt#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "mini-css-extract-plugin": "^2.4.2",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "dependencies": {
+    "css-loader": "^6.3.0",
+    "style-loader": "^3.3.0"
+  }
+}
