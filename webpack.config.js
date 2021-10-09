@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
+    devtool: 'eval',
     entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'assets'),

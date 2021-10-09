@@ -1,9 +1,5 @@
 export default class Popup {
 
-    constructor() {
-        this.status = false;
-    }
-
     init() {
         let popupBody = document.createElement('div');
 
@@ -13,20 +9,16 @@ export default class Popup {
         this.body = popupBody;
     }
 
-    visibility() {
-        let popupBody = document.querySelector('.get-play__popup');
-        if(this.status) {
-            popupBody.style.opacity = 0;
-            setTimeout(()=>{
-                popupBody.style.visibility = 'hidden';
-                this.status = false;
-            }, 500);
-        } else {
-            popupBody.style.visibility = 'visible';
-            popupBody.style.opacity = 1;
-            this.status = true;
-        }
+    show() {
+        this.body.style.visibility = 'visible';
+        this.body.style.opacity = 1;
+    }
 
+    hide() {
+        this.body.style.opacity = 0;
+        setTimeout(()=>{
+            this.body.style.visibility = 'hidden';
+        }, 500);
     }
 
 }

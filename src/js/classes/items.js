@@ -1,13 +1,13 @@
 export default class Items {
 
-    constructor(parsResult, popup) {
-        this.elements = parsResult;
+    constructor(popup) {
         this.popup = popup;
+        this.status = false;
     }
 
-    create() {
-        for(let key in this.elements) {
-            let part = this.elements[key],
+    create(parsArr) {
+        for(let key in parsArr) {
+            let part = parsArr[key],
                 title = document.createElement('h2'),
                 items = document.createElement('div')
 
@@ -33,6 +33,7 @@ export default class Items {
             items.setAttribute('id', part.id);
             this.popup.append(title);
             this.popup.append(items);
+            this.status = true;
         }
     }
 
@@ -44,7 +45,9 @@ export default class Items {
             preloader = nowBlock.querySelector('.popup-row__iframe-preloader'),
             status = nowBlock.querySelector('.popup-row__iframe-status');
 
-        iframe.remove();
+        if(iframe) {
+            iframe.remove();
+        }
         preloader.removeAttribute('style');
         status.removeAttribute('style');
         name.innerHTML = parsObj.items[0].name;
@@ -52,7 +55,7 @@ export default class Items {
         link.setAttribute('data-video-id', parsObj.items[0].id);
     }
 
-    addIframe(item) {
+    createIframe(item) {
         let container = item.querySelector('.popup-row__links'),
             videoID = container.getAttribute('data-video-id'),
             status = item.querySelector('.popup-row__iframe-status'),

@@ -29,6 +29,13 @@
 .get-play__button--active {
   transform: rotate(135deg);
 }
+.get-play__button--disable {
+  border-color: gray;
+}
+.get-play__button--disable:before,
+.get-play__button--disable:after {
+  color:gray;
+}
 .get-play__button--active:before {
   display: none;
 }

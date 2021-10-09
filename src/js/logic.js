@@ -1,70 +1,61 @@
-import createPopupButton from './functions/popupButton';
+import Button from "./classes/button";
 import Popup from "./classes/popup";
 import Parser from "./classes/parser";
 import Items from "./classes/items";
+import observer from "./functions/observer";
+import checkYtb from './functions/checkYtb';
 
 export default ()=>{
+  
+  if(checkYtb()) return;
 
-    let url = location.href,
-        arrUrl = url.split('/');
+  let button = new Button,
+      popup = new Popup,
+      pars = new Parser;
+      
+  button.init();
+  popup.init();
+  
+  let items = new Items(popup.body);
 
-    if(arrUrl.indexOf('www.youtube.com') < 0) {
-      return;
+  observer(button, popup);
+
+  button.body.addEventListener('click', ()=>{
+    if (button.body.classList.contains('get-play__button--disable')) return;
+
+    if(button.status) {
+      button.close();
+      popup.hide();
+    } else {
+      if(items.status) {
+          items.updateNowPlaying(pars.getNowPlayingVideo());
+      } else {
+          items.create([pars.getNowPlayingVideo()])
+      }
+      button.open()
+      popup.show();
     }
 
-    let genButt = createPopupButton(),
-        pars = new Parser,
-        popup = new Popup();
+  });
 
-    popup.init();
+  document.addEventListener('click', (e)=>{
+    if(e.target.closest('.popup-row__name')) {
+      let element = e.target.closest('.get-play__popup-row'),
+          activeClass = 'popup-row__links--active',
+          linksBlock = element.querySelector('.popup-row__links');
 
-    let items = new Items([pars.getNowPlayingVideo()], popup.body);
+      if(!linksBlock.querySelector('iframe')) {
+        items.createIframe(element);
+      }
 
-    items.create();
-
-
-    genButt.addEventListener('click', ()=>{
-      let activeClass = 'get-play__button--active';
-
-      if(genButt.classList.contains(activeClass)) {
-        genButt.classList.remove(activeClass);
+      if(linksBlock.classList.contains(activeClass)) {
+        linksBlock.classList.remove(activeClass);
       } else {
-        genButt.classList.add(activeClass);
+        linksBlock.classList.add(activeClass);
       }
 
-      popup.visibility();
-
-    });
-
-    document.addEventListener('click', (e)=>{
-      if(e.target.closest('.popup-row__name')) {
-        let element = e.target.closest('.get-play__popup-row'),
-            activeClass = 'popup-row__links--active',
-            linksBlock = element.querySelector('.popup-row__links');
-
-        if(!linksBlock.querySelector('iframe')) {
-          items.addIframe(element);
-        }
-
-        if(linksBlock.classList.contains(activeClass)) {
-          linksBlock.classList.remove(activeClass);
-        } else {
-          linksBlock.classList.add(activeClass);
-        }
-
-      }
-    });
-
-    let h1 = document.querySelector('#info h1.title');
-    const observer = new MutationObserver(mutations => {
-      items.updateNowPlaying(pars.getNowPlayingVideo())
-    });
-
-    observer.observe(h1, {
-      childList: true,
-      subtree: true,
-      characterDataOldValue: false
-    });
+    }
+  });
 
 }
 
