@@ -45,6 +45,8 @@ export default class Items {
             preloader = nowBlock.querySelector('.popup-row__iframe-preloader'),
             status = nowBlock.querySelector('.popup-row__iframe-status');
 
+        if(name.textContent == parsObj.items[0].name) return;
+
         if(iframe) {
             iframe.remove();
         }
