@@ -27,11 +27,17 @@ export default ()=>{
       button.close();
       popup.hide();
     } else {
+
+      // let playlist = document.querySelectorAll('ytd-playlist-panel-video-renderer#playlist-items');
+
       if(items.status) {
-          items.updateNowPlaying(pars.getNowPlayingVideo());
+        items.updateNowPlaying(pars.getNowPlayingVideo());
       } else {
-          items.create([pars.getNowPlayingVideo()])
+        // let parsObj = (playlist.length > 0) ? [pars.getNowPlayingVideo(), pars.getPlaylistVideo()] : [pars.getNowPlayingVideo()];
+        let parsObj = [pars.getNowPlayingVideo()];
+        items.create(parsObj);
       }
+
       button.open()
       popup.show();
     }
